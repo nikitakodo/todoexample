@@ -26,7 +26,7 @@ class TodoListService
         return TodoList::query()->where('user_id', $this->getUser()->getAuthIdentifier())->get();
     }
 
-    public function createTodoLists(string $title): TodoList
+    public function createTodoList(string $title): TodoList
     {
         $newTodoList = new TodoList();
         $newTodoList->title = $title;
@@ -43,7 +43,7 @@ class TodoListService
      * @return TodoList
      * @throws TodolistAccessRestrictedException
      */
-    public function updateTodoLists(TodoList $todoList, string $title): TodoList
+    public function updateTodoList(TodoList $todoList, string $title): TodoList
     {
         $this->checkAccess($todoList);
         $todoList->title = $title;
