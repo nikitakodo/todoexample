@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\TodolistAccessRestrictedException;
 use App\Http\Requests\TodoListRequest;
 use App\Http\Resources\TodoListResource;
 use App\Models\TodoList;
 use App\Services\TodoListService;
 use Illuminate\Http\JsonResponse;
+use Throwable;
 
 class TodoListController extends Controller
 {
@@ -34,7 +34,7 @@ class TodoListController extends Controller
                     $this->todoListService->getTodoLists()
                 )
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return response()->json(['error' => true, 'message' => $throwable->getMessage()], $throwable->getCode());
         }
     }
@@ -49,9 +49,9 @@ class TodoListController extends Controller
     {
         try {
             return response()->json(
-                TodoListResource::make($this->todoListService->createTodoLists($request->title))
+                TodoListResource::make($this->todoListService->createTodoList($request->title))
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return response()->json(['error' => true, 'message' => $throwable->getMessage()], $throwable->getCode());
         }
     }
@@ -67,7 +67,7 @@ class TodoListController extends Controller
         try {
             $this->todoListService->checkAccess($todoList);
             return response()->json(TodoListResource::make($todoList));
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return response()->json(['error' => true, 'message' => $throwable->getMessage()], $throwable->getCode());
         }
     }
@@ -78,15 +78,14 @@ class TodoListController extends Controller
      * @param TodoListRequest $request
      * @param TodoList $todoList
      * @return JsonResponse
-     * @throws TodolistAccessRestrictedException
      */
     public function update(TodoListRequest $request, TodoList $todoList): JsonResponse
     {
         try {
             return response()->json(
-                TodoListResource::make($this->todoListService->updateTodoLists($todoList, $request->title))
+                TodoListResource::make($this->todoListService->updateTodoList($todoList, $request->title))
             );
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return response()->json(['error' => true, 'message' => $throwable->getMessage()], $throwable->getCode());
         }
     }
@@ -102,7 +101,7 @@ class TodoListController extends Controller
         try {
             $this->todoListService->deleteTodoList($todoList);
             return response()->json();
-        } catch (\Throwable $throwable) {
+        } catch (Throwable $throwable) {
             return response()->json(['error' => true, 'message' => $throwable->getMessage()], $throwable->getCode());
         }
     }
