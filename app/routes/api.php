@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('auth/login', 'AuthController@login');
-Route::group(
-    ['middleware' => ['auth:api'], 'prefix' => 'auth'],
-    function ($router) {
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::group(['prefix' => 'auth'], function () {
         Route::post('logout', 'AuthController@logout');
         Route::post('refresh', 'AuthController@refresh');
         Route::post('me', 'AuthController@me');
-
-    }
-);
+    });
+    Route::resource('todo-list', 'TodoListController')->except('create', 'edit');
+    Route::resource('todo-list-item', 'TodoListItemController')->except('create', 'edit');
+});
