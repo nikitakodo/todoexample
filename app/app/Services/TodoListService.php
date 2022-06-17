@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\TodolistAccessRestrictedException;
+use App\Exceptions\TodoListNotFoundException;
 use App\Models\TodoList;
 use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -24,6 +25,20 @@ class TodoListService
     public function getTodoLists(): Collection
     {
         return TodoList::query()->where('user_id', $this->getUser()->getAuthIdentifier())->get();
+    }
+
+    /**
+     * @throws TodoListNotFoundException
+     */
+    public function getTodoList(int $id): TodoList
+    {
+        /** @var TodoList $todoList */
+        $todoList =  TodoList::query()->where('id', $id)->first();
+        if (!$todoList) {
+            throw new TodoListNotFoundException();
+        }
+
+        return $todoList;
     }
 
     public function createTodoList(string $title): TodoList
@@ -76,6 +91,14 @@ class TodoListService
         $user = $this->getUser();
         if ($todoList->user_id !== $user->getAuthIdentifier()) {
             throw new TodolistAccessRestrictedException();
+        }
+    }
+
+    public function setIsCompleted(TodoList $todoList, bool $isCompleted): void
+    {
+        if ($todoList->is_completed !== $isCompleted) {
+            $todoList->is_completed = $isCompleted;
+            $todoList->save();
         }
     }
 
