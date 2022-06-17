@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Model\User;
+use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 
 class CreateUser extends Command
